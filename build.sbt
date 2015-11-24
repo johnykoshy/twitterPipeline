@@ -6,6 +6,10 @@ organization:= "de.geoheil"
 
 version := "1.0-SNAPSHOT"
 
+mainClass in `twitterPipeline` in Compile := (mainClass in `frontend` in Compile).value
+
+fullClasspath in `twitterPipeline` in Runtime ++= (fullClasspath in `frontend` in Runtime).value
+
 lazy val twitterPipeline = (project in file(".")).aggregate(frontend)
 
 lazy val frontend = (project in file("modules/frontend")).enablePlugins(PlayScala)
@@ -21,5 +25,5 @@ fork in run := true
 
 // enables unlimited amount of resources to be used :-o just for runAll convenience
 concurrentRestrictions in Global := Seq(
-  Tags.customLimit( _ => true) 
+  Tags.customLimit( _ => true)
 )
