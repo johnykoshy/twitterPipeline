@@ -1,20 +1,25 @@
+//import play.PlayScala
+//import sbt.Keys._
+
 name := """twitterPipeline"""
+organization:= "de.geoheil"
 
 version := "1.0-SNAPSHOT"
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+lazy val twitterPipeline = (project in file(".")).aggregate(frontend)
 
-scalaVersion := "2.11.6"
+lazy val frontend = (project in file("modules/frontend")).enablePlugins(PlayScala)
+//lazy val backend = project in file("modules/backend")
 
-libraryDependencies ++= Seq(
-  jdbc,
-  cache,
-  ws,
-  specs2 % Test
+val runAll = inputKey[Unit]("Runs all subprojects")
+
+runAll := {
+  (run in Compile in `frontend`).evaluated
+}
+
+fork in run := true
+
+// enables unlimited amount of resources to be used :-o just for runAll convenience
+concurrentRestrictions in Global := Seq(
+  Tags.customLimit( _ => true) 
 )
-
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
-
-// Play provides two styles of routers, one expects its actions to be injected, the
-// other, legacy style, accesses its actions statically.
-routesGenerator := InjectedRoutesGenerator
