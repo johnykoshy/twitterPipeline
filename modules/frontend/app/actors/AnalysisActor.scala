@@ -10,7 +10,7 @@ final case class ClientSentMessage(text: String)
 
 
 object AnalysisActor {
-  def props(out: ActorRef) = Props(new AnalysisActor(out))
+  def props(out: ActorRef) = Props(classOf[AnalysisActor],out)
 }
 
 class AnalysisActor(out: ActorRef) extends Actor {
