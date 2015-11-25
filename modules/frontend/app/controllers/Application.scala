@@ -7,9 +7,9 @@ import play.api.Play
 import play.api.mvc._
 
 class Application extends Controller {
+  implicit val app = play.api.Play.current
 
   def index = Action {
-
     val javascripts = {
       if (Play.isDev) {
         // Load all .js and .coffeescript files within app/assets
@@ -26,10 +26,11 @@ class Application extends Controller {
     Ok(views.html.index(javascripts))
   }
 
-  def socket = WebSocket.acceptWithActor[String, String] { request => out =>
-    AnalysisActor.props(out)
-  }
 
+  def socket = WebSocket.acceptWithActor[String, String] {
+    request => out =>
+      AnalysisActor.props(out)
+  }
 
 
   private def findScripts(base: File): Seq[String] = {
